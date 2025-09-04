@@ -1,4 +1,24 @@
 {
-    "python.defaultInterpreterPath": "./venv/Scripts/python.exe",
-    "python.terminal.activateEnvironment": true
-} 
+	"python.defaultInterpreterPath": "./venv/Scripts/python.exe",
+	"python.terminal.activateEnvironment": true,
+	"workbench.colorCustomizations": {
+		"commandCenter.border": "#15202b99",
+		"panel.border": "#85e5a3",
+		"sash.hoverBorder": "#85e5a3",
+		"sideBar.border": "#85e5a3",
+		"statusBar.background": "#5bdc83",
+		"statusBar.foreground": "#15202b",
+		"statusBarItem.hoverBackground": "#31d363",
+		"statusBarItem.remoteBackground": "#5bdc83",
+		"statusBarItem.remoteForeground": "#15202b",
+		"tab.activeBorder": "#85e5a3",
+		"titleBar.activeBackground": "#5bdc83",
+		"titleBar.activeForeground": "#15202b",
+		"titleBar.inactiveBackground": "#5bdc8399",
+		"titleBar.inactiveForeground": "#15202b99"
+	},
+	"peacock.color": "#5bdc83",
+	"editor.tabSize": 2,
+	"editor.fontSize": 16,
+	"prettier.useTabs": true
+}
