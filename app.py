@@ -4,6 +4,16 @@ import logging
 import uvicorn
 import json
 
+from database import engine
+from models import Base
+from models import User
+from sqlalchemy.orm import Session
+from database import SessionLocal
+
+logging.info("Starting FastAPI server1...")
+
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 logging.basicConfig(
     filename="/var/log/app/output.log",
@@ -19,21 +29,22 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-logging.info("Starting FastAPI server1...")
-
-def log_to_file(data: Dict):
-    logging.info(str(data))
+@app.get("/user")
+def get_user():
+    db: Session = SessionLocal()
+    users = db.query(User).all()
+    db.close()
+    return [user.__dict__ for user in users]
 
 @app.post("/echo_json")
 async def echo_json(data: Dict):
-    log_to_file(data)
+    logging.info(str(data))
     return data
 
 @app.post("/echo_number")
 async def echo_number(input: int):
-    log_to_file({"number": input})
+    logging.info(str({"number": input}))
     return {"number": input}
 
 if __name__ == "__main__":
-    logging.info("Starting FastAPI server2...")
     uvicorn.run("app:app", host="0.0.0.0", port=8001, reload=True)

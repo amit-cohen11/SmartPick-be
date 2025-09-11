@@ -1,0 +1,49 @@
+services:
+  echo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: echo-app
+    volumes:
+      - app_logs:/var/log/app
+    ports:
+      - "8000:8000"
+    networks:
+      - smartpick_net
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - smartpick_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - smartpick_net
+
+volumes:
+  postgres_data:
+  app_logs:
+
+networks:
+  smartpick_net:
+    external: true

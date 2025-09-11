@@ -1,0 +1,70 @@
+services:
+  elasticsearch:
+    image: elastic/elasticsearch:9.1.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - smartpick_net
+
+  kibana:
+    image: elastic/kibana:9.1.1
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - smartpick_net
+
+  logstash:
+    image: elastic/logstash:9.1.1
+    container_name: logstash
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - smartpick_net
+
+  filebeat:
+    image: elastic/filebeat:9.1.1
+    container_name: filebeat
+    user: root
+    volumes:
+      - app_logs:/var/log/app:ro
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    environment:
+      - BEAT_STRICT_PERMS=false
+    depends_on:
+      - logstash
+      - elasticsearch
+    networks:
+      - smartpick_net
+
+volumes:
+  es_data:
+  app_logs:
+
+networks:
+  smartpick_net:
+    external: true
