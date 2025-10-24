@@ -13,11 +13,20 @@ logger.debug("Starting FastAPI server1...", extra={"newKey": "newValue", "anothe
 async def echo_number(input: int):
     logger.debug("", extra={"number": input})
     try:
-        a = 1/0
+        a = 1-1
     except Exception:
         logger.debug("Something went wrong", exc_info=True, extra={"number": input})
     return {"number": input}
 
+
+@app.post("/echo_number_v2")
+async def echo_number_v2(input: int):
+    logger.debug("v2", extra={"number": input})
+    try:
+        a = 1/0
+    except Exception:
+        logger.debug("Something went wrong", exc_info=True, extra={"number": input})
+    return {"number": input}
 
 if __name__ == "__main__":
     logger.info("Starting FastAPI server2...")
