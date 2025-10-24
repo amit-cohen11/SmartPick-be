@@ -4,7 +4,14 @@ import logging
 from datetime import date
 
 
-log_dir = "/var/log/app" if os.name != "nt" else f"{os.getcwd()}\logs"
+
+today_str = date.today().isoformat()
+if os.name != "nt":
+    log_dir = "/var/log/app"
+    log_file = os.path.join(log_dir, f"output-{today_str}.log")
+else:
+    log_dir = os.path.join(os.getcwd(), "logs")
+    log_file = os.path.join(log_dir, f"output-{today_str}.log")
 os.makedirs(log_dir, exist_ok=True)
 
 class JsonFormatter(logging.Formatter):
@@ -36,7 +43,7 @@ class JsonFormatter(logging.Formatter):
 
 def setup_logger(file_handler=False, console_handler=True):
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     if logger.hasHandlers():
         logger.handlers.clear()
@@ -46,7 +53,7 @@ def setup_logger(file_handler=False, console_handler=True):
     logger.addHandler(console_handler)
 
     if(file_handler):
-        file_handler = logging.FileHandler(os.path.join(log_dir, f"output-{date.today()}.log"))
+        file_handler = logging.FileHandler(log_file)
         file_handler.setFormatter(JsonFormatter())
         logger.addHandler(file_handler)
 
